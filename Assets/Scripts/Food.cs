@@ -3,20 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Food : MonoBehaviour {
-    
-    // Use this for initialization
-    void Start () {
-	}
-	
-	// Update is called once per frame
-	void Update () {
 
-    
-	}
-
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-            Destroy(gameObject,3.0f);
+        if(other.gameObject.tag=="player")
+        {
+            Destroy(gameObject, 3.0f);
 
+        }
     }
+
 }

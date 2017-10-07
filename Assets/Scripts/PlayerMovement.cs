@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour {
     Vector3 Velocity;
     Vector3 CircleCenter;
     Vector3 offset;
+    Vector3 Target;
     bool FoundFood;
 	// Use this for initialization
 	void Start () {
@@ -19,10 +20,11 @@ public class PlayerMovement : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
-        GameObject collider = collision.gameObject;
-        if (collider.tag=="Food")
+        GameObject col = collision.gameObject;
+        if (col.tag=="Food")
         {
             FoundFood = true;
+            Target = col.transform.position;
         }
 
     }
@@ -59,7 +61,14 @@ public class PlayerMovement : MonoBehaviour {
 
     void Seek()
     {
-        print("seek!");
+        //print("seek!");
+        Velocity= Vector3.Normalize(Target - player.position)*SteeringForce;
+        player.position += Velocity * Time.deltaTime;
+        if (player.position == Target)
+        {
+            Velocity=Vector3.zero;
+            //FoundFood = false;
 
+        }
     }
 }
