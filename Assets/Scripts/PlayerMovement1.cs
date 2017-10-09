@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour {
+public class PlayerMovement1 : MonoBehaviour {
 
     // for receiving info from the subsumption
     public PlayerSubsumption _playersubsumption;
+    private string Instruction;
 
     Transform player;
     public float SteeringForce=5.0f;
@@ -18,7 +19,7 @@ public class PlayerMovement : MonoBehaviour {
 
     // for seek and arrival
     Vector3 Target;
-    bool FoundFood;
+    public bool AteFood;
     public float slowingRadius;
     
 
@@ -27,31 +28,33 @@ public class PlayerMovement : MonoBehaviour {
         player = GetComponent<Rigidbody>().transform;
         InvokeRepeating("SetAngel", 0f, 0.5f);
         InvokeRepeating("SetOffset", 0f, 0.5f);
-        FoundFood = false;
+        AteFood = false;
+        Instruction = _playersubsumption.Instruction;
+        Target = _playersubsumption.Target;
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        GameObject col = other.gameObject;
-        if (col.tag=="Food")
-        {
-            FoundFood = true;
-            Target = col.transform.position;
-        }
-
-    }
     // Update is called once per frame
     void Update () {
 
-        
-        if (FoundFood == false)
-        {// player wander around
-            Wander();
-        }
-        else
+        Instruction = _playersubsumption.Instruction;
+        if (Instruction == "Eat")
         {
+            Target = _playersubsumption.Target;
+            print("Target:" + Target);
             Seek();
         }
+        else if (Instruction == "Attack")
+        {
+            Target = _playersubsumption.Target;
+            Seek();
+            Attack();
+        }
+        else if (Instruction == "Flee")
+        {
+            Target = _playersubsumption.Target;
+            Flee();
+        }
+        else Wander();
     }
 
     void Wander()
@@ -87,8 +90,18 @@ public class PlayerMovement : MonoBehaviour {
         player.position += Velocity * Time.deltaTime;
         if(Vector3.Distance(player.position,Target)<=0.1)
         {
-            FoundFood = false;
+            AteFood = true;
         }
        
+    }
+
+    void Attack()
+    {
+
+    }
+
+    void Flee()
+    {
+
     }
 }

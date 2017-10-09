@@ -8,7 +8,7 @@ public class Food : MonoBehaviour {
     {
         if(other.gameObject.tag=="Cow")
         {
-            Destroy(gameObject, 0.5f);
+            //Destroy(gameObject, 1.0f);
 
         }
     }

@@ -87,7 +87,9 @@
     <Compile Include="Assets\Scripts\CameraFollow.cs" />
     <Compile Include="Assets\Scripts\Food.cs" />
     <Compile Include="Assets\Scripts\PlayerMovement.cs" />
+    <Compile Include="Assets\Scripts\PlayerMovement1.cs" />
     <Compile Include="Assets\Scripts\PlayerSensory.cs" />
+    <Compile Include="Assets\Scripts\PlayerSubsumption.cs" />
     <Compile Include="Assets\Scripts\Temp.cs" />
   </ItemGroup>
   <ItemGroup>
