@@ -6,9 +6,9 @@ public class Food : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag=="player")
+        if(other.gameObject.tag=="Cow")
         {
-            Destroy(gameObject, 3.0f);
+            Destroy(gameObject, 0.5f);
 
         }
     }
