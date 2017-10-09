@@ -19,12 +19,17 @@ public class PlayerMovement1 : MonoBehaviour {
 
     // for seek and arrival
     Vector3 Target;
-    public bool AteFood;
     public float slowingRadius;
-    
 
-	// Use this for initialization
-	void Start () {
+    // infos to pass to the subsumption
+    //public bool FinishAttack;
+    //public bool FinishFlee;
+    public bool AteFood;
+    public float Health;
+
+
+    // Use this for initialization
+    void Start () {
         player = GetComponent<Rigidbody>().transform;
         InvokeRepeating("SetAngel", 0f, 0.5f);
         InvokeRepeating("SetOffset", 0f, 0.5f);
@@ -37,16 +42,15 @@ public class PlayerMovement1 : MonoBehaviour {
     void Update () {
 
         Instruction = _playersubsumption.Instruction;
+        print("Instruction:" + _playersubsumption.Instruction);
         if (Instruction == "Eat")
         {
             Target = _playersubsumption.Target;
-            print("Target:" + Target);
             Seek();
         }
         else if (Instruction == "Attack")
         {
             Target = _playersubsumption.Target;
-            Seek();
             Attack();
         }
         else if (Instruction == "Flee")
@@ -54,7 +58,19 @@ public class PlayerMovement1 : MonoBehaviour {
             Target = _playersubsumption.Target;
             Flee();
         }
-        else Wander();
+
+        else if(Instruction== "Die")
+        {
+            Die();
+        }
+
+        else if(Instruction== "Wander")
+        {
+            Wander();
+        }
+
+        else { print("no instructions"); }
+        
     }
 
     void Wander()
@@ -66,6 +82,7 @@ public class PlayerMovement1 : MonoBehaviour {
         Velocity = Vector3.Normalize(CircleCenter + RandomVector)*SteeringForce;
         //print("velocity:"+Velocity+",CircleCenter:"+CircleCenter);
         player.position += Velocity * Time.deltaTime;
+        //print("wander");
     }
 
     void SetAngel()
@@ -82,7 +99,7 @@ public class PlayerMovement1 : MonoBehaviour {
 
     void Seek()
     {
-        //print("seek!");
+       
         // heading towards the location of the target, fake arriving behavior
         float distance = Vector3.Distance(Target, player.position);
         Velocity = Vector3.Normalize(Target - player.position) * SteeringForce*distance/slowingRadius;
@@ -90,18 +107,44 @@ public class PlayerMovement1 : MonoBehaviour {
         player.position += Velocity * Time.deltaTime;
         if(Vector3.Distance(player.position,Target)<=0.1)
         {
+
             AteFood = true;
+            // eat can get health recover
+            if (_playersubsumption.Health < 90)
+                _playersubsumption.Health += 10;
+            else if (_playersubsumption.Health < 100)
+                _playersubsumption.Health = 100;
+           
         }
+        
        
     }
 
     void Attack()
     {
+        float timer = Time.deltaTime;
+        float distance = Vector3.Distance(Target, player.position);
+        Velocity = Vector3.Normalize(Target - player.position) * SteeringForce * distance / slowingRadius;
+        player.position += Velocity * Time.deltaTime;
+
+        // health drops 5 when attack each other
+
+            _playersubsumption.Health -= Time.deltaTime * 10.0f;
+
+
 
     }
 
     void Flee()
     {
+        float timer = Time.deltaTime;
+        Velocity = Vector3.Normalize(player.position - Target) * SteeringForce;
+        player.position += Velocity * Time.deltaTime;
 
+    }
+
+    void Die()
+    {
+        Destroy(gameObject, 1.0f);
     }
 }

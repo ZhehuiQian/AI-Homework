@@ -9,42 +9,94 @@ public class PlayerSubsumption : MonoBehaviour {
 
     private bool FoundFood;
     private bool FoundEnemy;
-    private float Health;
+
 
     // parameters to pass to movement
     public string Instruction;
     public Vector3 Target;
+    public float Health;
 
     // parameters to get from the movement
-    public bool AteFood;
+    //public bool AteFood;
 
     void Start()
     {
         FoundFood = false;
         FoundEnemy = false;
-        AteFood = _playerMovement.AteFood;
         Target = Vector3.zero;
+        //Health = 100f;
     }
 
     void Update()
     {
-        AteFood = _playerMovement.AteFood;
-
         FoundFood = _playerSensory.FoundFood;
         FoundEnemy = _playerSensory.FoundEnemy;
-        Health = _playerSensory.HealthPoint;
-        Target = _playerSensory.Target;
-        if (FoundFood&&!AteFood)
+        print("FoundEnemy?" + FoundEnemy);
+        if (Health > 70)
         {
-            if (FoundEnemy)
+            if (FoundFood && !FoundEnemy && !_playerMovement.AteFood)
             {
-                if (Health > 70)
-                { Instruction = "Attack"; }
-                else Instruction = "Flee";
+                Instruction = "Eat";
+                Target = _playerSensory.FoodPos;
             }
-            else Instruction = "Eat";
+            else if (FoundFood && FoundEnemy)
+            {
+                Instruction = "Attack";
+                Target = _playerSensory.EnemyPos;
+            }
+            else Instruction = "Wander";
+           
         }
-        else Instruction = "Wander";
+
+        else if (Health > 20 && Health<70)
+        {
+            if (FoundFood && !FoundEnemy && !_playerMovement.AteFood)
+            {
+                Instruction = "Eat";
+                Target = _playerSensory.FoodPos;
+            }
+            else Instruction = "Wander";
+        }
+
+       else if (Health > 0 && Health<20)
+        {
+            if (FoundFood && !FoundEnemy && !_playerMovement.AteFood)
+            {
+                Instruction = "Eat";
+                Target = _playerSensory.FoodPos;
+            }
+            else if (FoundFood && FoundEnemy)
+            {
+                Instruction = "Flee";
+                Target = _playerSensory.EnemyPos;
+            }
+            else Instruction = "Wander";
+         
+        }
+
+       else
+        {
+            Instruction = "Die";
+        }
+
+
+        // old stuff
+        /*  if (FoundFood&&!AteFood)
+          {
+              if (FoundEnemy)
+              {
+                  if (Health > 70)
+                  {
+                      Instruction = "Attack";
+                      Health -= Time.deltaTime * 10.0f;
+                      print("Health" + Health);
+                  }
+                  else Instruction = "Flee";
+              }
+              else Instruction = "Eat";
+          }
+          else Instruction = "Wander";
+          */
     }
 
 

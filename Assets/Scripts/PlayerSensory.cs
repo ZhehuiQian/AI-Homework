@@ -3,21 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerSensory : MonoBehaviour {
+    // parameters get from the player subsumption
 
+
+    // parameters pass to the player subsumption
     public bool FoundFood;
     public bool FoundEnemy;
-    private Vector3 FoodPos;
-    private Vector3 EnemyPos;
+    public Vector3 FoodPos;
+    public Vector3 EnemyPos;
+    public float range;
+
+    // private stuff
     GameObject[] Enemys;
-    public Vector3 Target;
-    public float HealthPoint;
-   
+       
     void Start()
     {
         FoundFood = false;
         FoundEnemy = false;
         Enemys = GameObject.FindGameObjectsWithTag("Cow");
-        HealthPoint = 100.0f;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -27,14 +30,15 @@ public class PlayerSensory : MonoBehaviour {
         {
             FoundFood = true;
             FoodPos = col.transform.position;
-            //print("found food!");
+         
             foreach (GameObject Enemy in Enemys)
             {
-                print("FoundEnemy");
+               
                 // check if there is a potential goal
                 float dis_food = Vector3.Distance(FoodPos, Enemy.transform.position);
-                if (dis_food <2.0f)
+                if (dis_food <=range && Enemy!=gameObject)
                 {
+                    print("dis_food" + dis_food);
                     FoundEnemy = true;
                     EnemyPos = Enemy.transform.position;
                 }
@@ -43,18 +47,32 @@ public class PlayerSensory : MonoBehaviour {
 
     }
 
+    private void OnTriggerExit(Collider other)
+    {
+        GameObject col = other.gameObject;
+        if (col.tag == "Food")
+        {
+            FoundFood = false;
+            FoundEnemy = false;
+        }
+            
+    }
+
     void Update()
     {
-        if (FoundFood)
-        {
-            if (FoundEnemy)
-            {
-                Target = EnemyPos;
-            }
+     
+        //    //HealthPoint = _playersubsumption.Health;
+        //    if (FoundFood)
+        //    {
+        //        if (FoundEnemy)
+        //        {
+        //            Target = EnemyPos;
 
-            else Target = FoodPos;
-            print("passTarget");
-        }
-        else Target = Vector3.zero;
+        //        }
+
+        //        else Target = FoodPos;
+        //        //print("passTarget");
+        //    }
+        //    else Target = Vector3.zero;
     }
 }
