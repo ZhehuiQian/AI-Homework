@@ -25,7 +25,7 @@ public class PlayerMovement1 : MonoBehaviour {
     //public bool FinishAttack;
     //public bool FinishFlee;
     public bool AteFood;
-    public float Health;
+    //public float Health;
 
 
     // Use this for initialization
